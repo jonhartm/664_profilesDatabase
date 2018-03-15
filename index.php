@@ -32,11 +32,14 @@ if (!isset($_SESSION['user_id'])) {
     echo '<p>No Profiles Found</p>';
   } else {
     echo '<table border="1">';
-    echo '<tr><th>Name</th><th>Headline</th><tr>';
+    echo '<tr><th>Name</th><th>Headline</th><th>Action</th><tr>';
     foreach ($rows as $row) {
       echo '<tr>';
       echo '<td><a href="view.php?profile_id='.$row['profile_id'].'">'.$row['first_name'].' '.$row['last_name'].'</a></td>';
       echo '<td>'.$row['headline'].'</td>';
+      echo '<td><a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a> ';
+      echo '<a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a></td>';
+      echo '</tr>';
     }
     echo '</table>';
   }
