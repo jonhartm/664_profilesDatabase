@@ -40,6 +40,7 @@ if (!isset($_SESSION['user_id'])) {
     }
     echo '</table>';
   }
+  echo '<p><a href="add.php">Add New Entry</a></p>';
 }
 
 ?>
