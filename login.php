@@ -51,17 +51,13 @@ if (isset($_POST['email']) && isset($_POST['pass'])) {
 <?php
   flashMessages();
 ?>
-   <form method="post">
-     <label for="email">User Name</label>
-     <input type="text" name="email"><br/>
-     <label for="pass">Password</label>
-     <input type="text" name="pass"><br/>
-     <input type="submit" value="Log In">
-     <input type="submit" name="cancel" value="Cancel">
-   </post>
- </div>
-
- <pre>
-   <?php print_r($_POST); ?>
- </pre>
+  <form method="post">
+    <label for="email">User Name</label>
+    <input type="text" name="email" id="email"><br/>
+    <label for="pass">Password</label>
+    <input type="text" name="pass" id="pass"><br/>
+    <input type="submit" value="Log In" onclick="return doValidate();">
+    <input type="submit" name="cancel" value="Cancel">
+  </post>
+</div>
 </body>
