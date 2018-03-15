@@ -60,4 +60,22 @@ if (isset($_POST['email']) && isset($_POST['pass'])) {
     <input type="submit" name="cancel" value="Cancel">
   </post>
 </div>
+<script>
+function doValidate() {
+  try {
+    email = document.getElementById("email").value;
+    pw = document.getElementById("pass").value;
+    if (email == null || email == "" || pw == null || pw == "" ) {
+      alert('Both fields must be filled out');
+      return false;
+    } else if (email.indexOf("@") == -1) {
+      alert('Email must contain an "@" sign.');
+    }
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+  return false;
+ }
+ </script>
 </body>
