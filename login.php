@@ -71,6 +71,7 @@ function doValidate() {
     } else if (email.indexOf("@") == -1) {
       alert('Email must contain an "@" sign.');
     }
+    return true;
   } catch (e) {
     console.log(e);
     return false;
