@@ -33,9 +33,9 @@ if (!isset($_SESSION['user_id'])) {
   } else {
     echo '<table border="1">';
     echo '<tr><th>Name</th><th>Headline</th><tr>';
-    foreach ($row as $rows) {
+    foreach ($rows as $row) {
       echo '<tr>';
-      echo '<td><a href="view.php?profile_id='.$row['profile_id'].'">'.$row['first_name'].' '.$row['last_name'].'</a></td><td>';
+      echo '<td><a href="view.php?profile_id='.$row['profile_id'].'">'.$row['first_name'].' '.$row['last_name'].'</a></td>';
       echo '<td>'.$row['headline'].'</td>';
     }
     echo '</table>';
