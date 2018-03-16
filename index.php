@@ -47,10 +47,5 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 ?>
-<p>
-<b>Note:</b> Your implementation should retain data across multiple
-logout/login sessions.  This sample implementation clears all its
-data periodically - which you should not do in your implementation.
-</p>
 </div>
 </body>
