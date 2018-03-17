@@ -49,8 +49,8 @@ if ( $row === false ) {
   <div class="container">
   <h1>Deleteing Profile</h1>
     <form method="post" action="delete.php">
-      <p>First Name: AAA</p>
-      <p>Last Name: AAA</p>
+      <p>First Name: <?= $row['first_name'] ?></p>
+      <p>Last Name: <?= $row['last_name'] ?></p>
       <input type="hidden" name="profile_id" value="<?= $_GET['profile_id'] ?>">
       <input type="submit" name="delete" value="Delete">
       <input type="submit" name="cancel" value="Cancel">
