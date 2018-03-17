@@ -26,6 +26,7 @@ session_start()
 if (!isset($_SESSION['user_id'])) {
   echo '<p><a href="login.php">Please log in</a></p>';
 } else {
+  echo '<p><a href="logout.php">Log out</a></p>';
   $stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM profile");
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   if (!$rows) {
