@@ -31,14 +31,22 @@ if (isset($_POST['first_name'])
     return;
   }
 
+  // Validate the Webpage
+  if (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://")){
+    $_SESSION['error'] = 'Webpage must begin with either "http:\\\\" or "https:\\\\"';
+    header("Location: add.php");
+    return;
+  }
+
   // If we got here, insert into the database
   $stmt = $pdo->prepare('INSERT INTO Profile
-    (user_id, first_name, last_name, email, headline, summary)
-    VALUES ( :uid, :fn, :ln, :em, :he, :su)');
+    (user_id, first_name, last_name, url, email, headline, summary)
+    VALUES ( :uid, :fn, :ln, :url, :em, :he, :su)');
   $stmt->execute(array(
     ':uid' => $_SESSION['user_id'],
     ':fn' => $_POST['first_name'],
     ':ln' => $_POST['last_name'],
+    ':url' => $_POST['webpage'],
     ':em' => $_POST['email'],
     ':he' => $_POST['headline'],
     ':su' => $_POST['summary'])
@@ -69,6 +77,8 @@ if (isset($_POST['first_name'])
       <input type="text" name="first_name" size="60"/></p>
       <p>Last Name:
       <input type="text" name="last_name" size="60"/></p>
+      <p>Webpage:
+      <input type="text" name="webpage" size="30"/></p>
       <p>Email:
       <input type="text" name="email" size="30"/></p>
       <p>Headline:<br/>

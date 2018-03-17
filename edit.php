@@ -36,15 +36,23 @@ if (isset($_POST['first_name'])
     return;
   }
 
+  // Validate the Webpage
+  if (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://")){
+    $_SESSION['error'] = 'Webpage must begin with either "http:\\\\" or "https:\\\\"';
+    header("Location: add.php");
+    return;
+  }
+
   // If we got here, insert into the database
-  $sql = "UPDATE profile SET first_name=:fn, last_name=:lastn, email=:em, headline =:he, summary=:su
+  $sql = "UPDATE profile SET first_name=:fn, last_name=:ln, url=:url, email=:em, headline =:he, summary=:su
             WHERE user_id = :u_id AND profile_id = :p_id";
   $stmt = $pdo->prepare($sql);
   $stmt->execute(array(
     ':u_id' => $_SESSION['user_id'],
     ':p_id' => $_POST['profile_id'],
     ':fn' => $_POST['first_name'],
-    ':lastn' => $_POST['last_name'],
+    ':ln' => $_POST['last_name'],
+    ':url' => $_POST['webpage'],
     ':em' => $_POST['email'],
     ':he' => $_POST['headline'],
     ':su' => $_POST['summary'])
@@ -88,6 +96,8 @@ if ( $row === false ) {
       <input type="text" name="first_name" size="60" value="<?=htmlentities($row['first_name']) ?>"/></p>
       <p>Last Name:
       <input type="text" name="last_name" size="60" value="<?=htmlentities($row['last_name']) ?>"/></p>
+      <p>Webpage:
+      <input type="text" name="webpage" size="30" value="<?=htmlentities($row['url']) ?>"/></p>
       <p>Email:
       <input type="text" name="email" size="30" value="<?=htmlentities($row['email']) ?>"/></p>
       <p>Headline:<br/>

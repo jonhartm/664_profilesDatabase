@@ -29,6 +29,7 @@ if ( $row === false ) {
     <h1>Profile information</h1>
     <p>First Name: <?=htmlentities($row['first_name']) ?></p>
     <p>Last Name: <?=htmlentities($row['last_name']) ?></p>
+    <p>Webpage: <?=htmlentities($row['url']) ?></p>
     <p>Email: <?=htmlentities($row['email']) ?></p>
     <p>Headline:<br/>
     <p><?=htmlentities($row['headline']) ?></p>
