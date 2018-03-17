@@ -28,7 +28,7 @@ if (!isset($_SESSION['user_id'])) {
 } else {
   echo '<p><a href="logout.php">Log out</a></p>';
 }
-$stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM profile");
+$stmt = $pdo->query("SELECT profile_id, user_id, first_name, last_name, headline FROM profile");
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (!$rows) {
@@ -40,8 +40,12 @@ if (!$rows) {
     echo '<tr>';
     echo '<td><a href="view.php?profile_id='.$row['profile_id'].'">'.$row['first_name'].' '.$row['last_name'].'</a></td>';
     echo '<td>'.$row['headline'].'</td>';
-    echo '<td><a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a> ';
-    echo '<a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a></td>';
+    if (isset($_SESSION['user_id']) && $row['user_id'] == $_SESSION['user_id']) {
+      echo '<td><a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a> ';
+      echo '<a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a></td>';
+    } else {
+      echo '<td></td>';
+    }
     echo '</tr>';
   }
   echo '</table>';
