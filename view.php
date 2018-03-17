@@ -35,7 +35,7 @@ if ( $row === false ) {
     <p><?=htmlentities($row['headline']) ?></p>
     <p>Summary:<br/>
     <p><?=htmlentities($row['summary']) ?></p>
-    <a href="index.php">Done</a>
+    <a href="javascript:history.back()">Done</a>
   </div>
 </body>
 </html>
