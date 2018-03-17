@@ -70,7 +70,7 @@ if (isset($_POST['first_name'])
 </head>
 <body>
   <div class="container">
-  <h1>Adding Profile for UMSI</h1>
+  <h1>Adding Profile for <?= $_SESSION['name'] ?></h1>
 <?php flashMessages(); ?>
     <form method="post">
       <p>First Name:
