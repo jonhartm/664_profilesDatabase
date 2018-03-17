@@ -6,6 +6,11 @@ session_start();
 if (!isset($_SESSION['user_id']))
   die("ACCESS DENIED");
 
+if (isset($_POST['cancel'])) {
+  header("Location: index.php");
+  return;
+}
+
 // Check to make sure we have all of our post data
 if (isset($_POST['first_name'])
 && isset($_POST['last_name'])
@@ -32,7 +37,7 @@ if (isset($_POST['first_name'])
   }
 
   // Validate the Webpage
-  if (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://")){
+  if (strlen($_POST['webpage']) > 0 && (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://"))){
     $_SESSION['error'] = 'Webpage must begin with either "http:\\\\" or "https:\\\\"';
     header("Location: add.php");
     return;
