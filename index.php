@@ -15,10 +15,24 @@ if (isset($_POST['search'])) {
   }
 }
 
+if (isset($_POST['next_10'])) {
+  $offset = isset($_GET['offset']) ? $_GET['offset']+10 : 10;
+  header("Location: index.php?offset=$offset");
+  return;
+} elseif (isset($_POST['prev_10'])) {
+  $offset = isset($_GET['offset']) ? $_GET['offset']-10 : 0;
+  header("Location: index.php?offset=$offset");
+  return;
+}
+
 if (isset($_GET['filter'])) {
   $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile WHERE first_name LIKE "%'.$_GET['filter'].'%" OR last_name LIKE "%'.$_GET['filter'].'%"';
 } else {
-  $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile';
+  $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile LIMIT 10';
+}
+
+if (isset($_GET['offset'])) {
+  $sql .= " OFFSET {$_GET['offset']}";
 }
 
 $stmt = $pdo->query($sql);
@@ -81,6 +95,16 @@ if (!$rows) {
     echo '</tr>';
   }
   echo '</table>';
+
+  // Previous and Next buttons
+  echo '<form method="post">';
+  if (isset($_GET['offset']) && !$_GET['offset'] == 0) {
+    echo '<input type="submit" name="prev_10" value="< Previous 10">';
+  }
+  if (count($rows) >= 10) {
+    echo '<input type="submit" name="next_10" value="Next 10 >">';
+  }
+  echo '</form>';
 }
 
 if (isset($_SESSION['user_id'])) {
