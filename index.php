@@ -4,29 +4,36 @@ require_once "util.php";
 
 session_start();
 
-if (isset($_POST['search'])) {
-  if (strlen($_POST['filter_by']) > 0) {
-    $_SESSION['success'] = "Search results for names containing \"{$_POST['filter_by']}\"";
-    header("Location: index.php?filter={$_POST['filter_by']}");
-    return;
-  } else {
-    header("Location: index.php");
-    return;
-  }
-}
+if (count($_POST) > 0) {
+  $get_header = array();
 
-if (isset($_POST['next_10'])) {
-  $offset = isset($_GET['offset']) ? $_GET['offset']+10 : 10;
-  header("Location: index.php?offset=$offset");
-  return;
-} elseif (isset($_POST['prev_10'])) {
-  $offset = isset($_GET['offset']) ? $_GET['offset']-10 : 0;
-  header("Location: index.php?offset=$offset");
-  return;
+  // get any existing get paramaters
+  if (isset($_GET['filter'])) {
+    $get_header['filter'] = $_GET['filter'];
+  }
+
+  if (isset($_GET['offset'])) {
+    $get_header['offset'] = $_GET['offset'];
+  }
+
+  // If there's a filter by post, set the get query 'filter' to that
+  if (isset($_POST['search']) && strlen($_POST['filter_by']) > 0) {
+    $_SESSION['success'] = "Search results for names containing \"{$_POST['filter_by']}\"";
+    $get_header['filter'] = $_POST['filter_by'];
+  }
+
+  // Set the offset query based on if either of the next or prev buttons were pressed
+  if (isset($_POST['next_10'])) {
+    $get_header['offset'] = isset($_GET['offset']) ? $_GET['offset']+10 : 10;
+  } elseif (isset($_POST['prev_10'])) {
+    $get_header['offset'] = isset($_GET['offset']) ? $_GET['offset']-10 : 0;
+  }
+
+  header("Location: index.php?".http_build_query($get_header));
 }
 
 if (isset($_GET['filter'])) {
-  $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile WHERE first_name LIKE "%'.$_GET['filter'].'%" OR last_name LIKE "%'.$_GET['filter'].'%"';
+  $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile WHERE first_name LIKE "%'.$_GET['filter'].'%" OR last_name LIKE "%'.$_GET['filter'].'%" LIMIT 10';
 } else {
   $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile LIMIT 10';
 }
@@ -65,8 +72,9 @@ if (!isset($_SESSION['user_id'])) {
 flashMessages();
 
 echo '<form method="post">';
-echo '<p>Search:';
-echo '<input type="text" name="filter_by" value="" size="20"/>';
+echo '<p>Search by Name:';
+$filter_text = isset($_GET['filter']) ? $_GET['filter'] : '';
+echo '<input type="text" name="filter_by" value="'.$filter_text.'" size="20"/>';
 echo '<input type="submit" name="search" value="Search">';
 echo '</form>';
 if (isset($_GET['filter'])) {
