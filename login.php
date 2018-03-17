@@ -29,7 +29,6 @@ if (isset($_POST['email']) && isset($_POST['pass'])) {
       return;
     } else {
       $_SESSION['error'] = "Incorrect password";
-      $_SESSION['error'] = $_POST['email'].' '.$check;
     }
   }
   header("Location: login.php");
