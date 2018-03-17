@@ -27,26 +27,29 @@ if (!isset($_SESSION['user_id'])) {
   echo '<p><a href="login.php">Please log in</a></p>';
 } else {
   echo '<p><a href="logout.php">Log out</a></p>';
-  $stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM profile");
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  if (!$rows) {
-    echo '<p>No Profiles Found</p>';
-  } else {
-    echo '<table border="1">';
-    echo '<tr><th>Name</th><th>Headline</th><th>Action</th><tr>';
-    foreach ($rows as $row) {
-      echo '<tr>';
-      echo '<td><a href="view.php?profile_id='.$row['profile_id'].'">'.$row['first_name'].' '.$row['last_name'].'</a></td>';
-      echo '<td>'.$row['headline'].'</td>';
-      echo '<td><a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a> ';
-      echo '<a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a></td>';
-      echo '</tr>';
-    }
-    echo '</table>';
+}
+$stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM profile");
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (!$rows) {
+  echo '<p>No Profiles Found</p>';
+} else {
+  echo '<table border="1">';
+  echo '<tr><th>Name</th><th>Headline</th><th>Action</th><tr>';
+  foreach ($rows as $row) {
+    echo '<tr>';
+    echo '<td><a href="view.php?profile_id='.$row['profile_id'].'">'.$row['first_name'].' '.$row['last_name'].'</a></td>';
+    echo '<td>'.$row['headline'].'</td>';
+    echo '<td><a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a> ';
+    echo '<a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a></td>';
+    echo '</tr>';
   }
-  echo '<p><a href="add.php">Add New Entry</a></p>';
+  echo '</table>';
 }
 
+if (isset($_SESSION['user_id'])) {
+  echo '<p><a href="add.php">Add New Entry</a></p>';
+}
 ?>
 </div>
 </body>
