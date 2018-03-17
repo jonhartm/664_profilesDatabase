@@ -20,6 +20,7 @@ if (count($_POST) > 0) {
   if (isset($_POST['search']) && strlen($_POST['filter_by']) > 0) {
     $_SESSION['success'] = "Search results for names containing \"{$_POST['filter_by']}\"";
     $get_header['filter'] = $_POST['filter_by'];
+    $get_header['offset'] = 0;
   }
 
   // Set the offset query based on if either of the next or prev buttons were pressed
