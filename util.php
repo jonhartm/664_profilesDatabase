@@ -9,3 +9,12 @@ function flashMessages() {
       unset($_SESSION['success']);
   }
 }
+
+function getRandomLineFromArray($a, $first_word_only=true) {
+  $selected = rand(0, count($a)-1);
+  if ($first_word_only) {
+    return trim(explode(" ", $a[$selected])[0]);
+  } else {
+    return $a[$selected];
+  }
+}
