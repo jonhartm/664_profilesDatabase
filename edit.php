@@ -37,9 +37,9 @@ if (isset($_POST['first_name'])
   }
 
   // Validate the Webpage
-  if (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://")){
+  if (strlen($_POST['webpage']) > 0 && (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://"))){
     $_SESSION['error'] = 'Webpage must begin with either "http:\\\\" or "https:\\\\"';
-    header("Location: add.php");
+    header("Location: edit.php?profile_id={$_POST['profile_id']}");
     return;
   }
 
@@ -57,7 +57,7 @@ if (isset($_POST['first_name'])
     ':he' => $_POST['headline'],
     ':su' => $_POST['summary'])
     );
-  $_SESSION['success'] = 'Profile Added';
+  $_SESSION['success'] = 'Profile Edited';
   header("Location: index.php");
   return;
 }
