@@ -18,27 +18,9 @@ if (isset($_POST['first_name'])
 && isset($_POST['headline'])
 && isset($_POST['summary'])) {
 
-  // Make sure all fields have something in them
-  if (strlen($_POST['first_name']) < 1
-  || strlen($_POST['last_name']) < 1
-  || strlen($_POST['email']) < 1
-  || strlen($_POST['headline']) < 1
-  || strlen($_POST['summary']) < 1) {
-    $_SESSION['error'] = "All fields are required";
-    header("Location: edit.php?profile_id={$_POST['profile_id']}");
-    return;
-  }
-
-  // Validate the Email
-  if (strpos($_POST['email'], '@') == 0) {
-    $_SESSION['error'] = 'E-mail must contain an "@"';
-    header("Location: edit.php?profile_id={$_POST['profile_id']}");
-    return;
-  }
-
-  // Validate the Webpage
-  if (strlen($_POST['webpage']) > 0 && (strpos($_POST['webpage'], "http://") == 0 || strpos($_POST['webpage'], "https://"))){
-    $_SESSION['error'] = 'Webpage must begin with either "http:\\\\" or "https:\\\\"';
+  $message = validateProfile();
+  if (is_string($message)) {
+    $_SESSION['error'] = $message;
     header("Location: edit.php?profile_id={$_POST['profile_id']}");
     return;
   }
