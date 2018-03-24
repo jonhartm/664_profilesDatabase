@@ -37,6 +37,22 @@ function validateProfile() {
   return true;
 }
 
+function validatePosition() {
+  for ($x=1; $x <= 9; $x++) {
+    if (!isset($_POST['year'.$x])) continue;
+    if (!isset($_POST['desc'.$x])) continue;
+    $year = $_POST['year'.$x];
+    $desc = $_POST['desc'.$x];
+    if (strlen($year) == 0 || strlen($desc) == 0) {
+      return "All fields are required";
+    }
+    if (!is_numeric($year)) {
+      return "Position year must be numeric";
+    }
+  }
+  return true;
+}
+
 function getRandomLineFromArray($a, $first_word_only=true) {
   $selected = rand(0, count($a)-1);
   if ($first_word_only) {
