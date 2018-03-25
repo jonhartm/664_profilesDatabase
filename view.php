@@ -10,6 +10,10 @@ if ( $row === false ) {
     header( 'Location: index.php' ) ;
     return;
 }
+
+$stmt = $pdo->prepare("SELECT * FROM position WHERE profile_id = :p_id");
+$stmt->execute(array(":p_id" => $_GET['profile_id']));
+$pos_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +33,14 @@ if ( $row === false ) {
     <p><?=htmlentities($row['headline']) ?></p>
     <p>Summary:<br/>
     <p><?=htmlentities($row['summary']) ?></p>
+    <p>Position</p>
+    <p><ul>
+<?php
+foreach ($pos_rows as $pos) {
+  echo '<li>'.$pos['year'].': '.$pos['description'].'</li>';
+}
+ ?>
+</ul></p>
     <a href="javascript:history.back()">Done</a>
   </div>
 </body>
