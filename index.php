@@ -87,7 +87,7 @@ if (!$rows) {
   echo '<tr><th>Name</th><th>Headline</th><th>Action</th>';
   for ($row=0;$row<count($rows);$row++) {
     echo '<tr>';
-    echo '<td>'.$row.'<a href="view.php?profile_id='.$rows[$row]['profile_id'].'">'.$rows[$row]['first_name'].' '.$rows[$row]['last_name'].'</a></td>';
+    echo '<td><a href="view.php?profile_id='.$rows[$row]['profile_id'].'">'.$rows[$row]['first_name'].' '.$rows[$row]['last_name'].'</a></td>';
     echo '<td>'.$rows[$row]['headline'].'</td>';
     if (isset($_SESSION['user_id']) && $rows[$row]['user_id'] == $_SESSION['user_id']) {
       echo '<td><a href="edit.php?profile_id='.$rows[$row]['profile_id'].'">Edit</a> ';
