@@ -34,7 +34,7 @@ if (count($_POST) > 0) {
 }
 
 if (isset($_GET['filter'])) {
-  $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile WHERE first_name LIKE "%'.$_GET['filter'].'%" OR last_name LIKE "%'.$_GET['filter'].'%" LIMIT 10';
+  $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile WHERE first_name LIKE "%'.$_GET['filter'].'%" OR last_name LIKE "%'.$_GET['filter'].'%" LIMIT 11';
 } else {
   $sql = 'SELECT profile_id, user_id, first_name, last_name, headline FROM profile LIMIT 11';
 }
@@ -84,10 +84,10 @@ if (!$rows) {
 } else {
   // Search Form
   echo '<table border="1">';
-  echo '<tr><th>Name</th><th>Headline</th><th>Action</th><tr>';
-  for ($row=0;$row<count($rows)-1;$row++) {
+  echo '<tr><th>Name</th><th>Headline</th><th>Action</th>';
+  for ($row=0;$row<count($rows);$row++) {
     echo '<tr>';
-    echo '<td><a href="view.php?profile_id='.$rows[$row]['profile_id'].'">'.$rows[$row]['first_name'].' '.$rows[$row]['last_name'].'</a></td>';
+    echo '<td>'.$row.'<a href="view.php?profile_id='.$rows[$row]['profile_id'].'">'.$rows[$row]['first_name'].' '.$rows[$row]['last_name'].'</a></td>';
     echo '<td>'.$rows[$row]['headline'].'</td>';
     if (isset($_SESSION['user_id']) && $rows[$row]['user_id'] == $_SESSION['user_id']) {
       echo '<td><a href="edit.php?profile_id='.$rows[$row]['profile_id'].'">Edit</a> ';
@@ -96,6 +96,7 @@ if (!$rows) {
       echo '<td></td>';
     }
     echo '</tr>';
+    if ($row == 9) break; // Quit out before the 11th entry is shown
   }
   echo '</table>';
 
