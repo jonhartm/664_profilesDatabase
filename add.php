@@ -121,13 +121,13 @@ $(document).ready(function() {
       alert("Maximum of nine position entries reached");
       return;
     }
-    countPos++;
     var div = $("<div>", {id:"position"+countPos});
     div.append($("<label>", {for:"year"+countPos, html:"Year:"}));
     div.append($("<input>", {type:"text", name:"year"+countPos, value:""}));
     div.append($("<input>", {type:"button", value:"-", onclick:"$('#position"+countPos+"').remove(); return false;"}));
     div.append($("<textarea>", {name:"desc"+countPos, rows:"8", cols:"80"}));
     $("#position_fields").append( div );
+    countPos++;
   });
 })
 </script>

@@ -39,6 +39,28 @@ if (isset($_POST['first_name'])
     ':he' => $_POST['headline'],
     ':su' => $_POST['summary'])
     );
+
+    // Insert the position entries
+    $rank = 1;
+    for ($x=0; $x<=9; $x++) {
+      if (!isset($_POST['year'.$x])) continue;
+      if (!isset($_POST['desc'.$x])) continue;
+      $year = $_POST['year'.$x];
+      $desc = $_POST['desc'.$x];
+
+      $stmt = $pdo->prepare('UPDATE Position SET year=:yr, description=:desc
+        WHERE profile_id=:pid AND rank=:rnk');
+      $stmt->execute(array(
+        ':pid' => $_POST['profile_id'],
+        ':rnk' => $rank,
+        ':yr' => $year,
+        ':desc' => $desc)
+        );
+      $rank++;
+    }
+
+
+
   $_SESSION['success'] = 'Profile Edited';
   header("Location: index.php");
   return;
@@ -59,6 +81,10 @@ if ( $row === false ) {
     header( 'Location: index.php' ) ;
     return;
 }
+
+$stmt = $pdo->prepare("SELECT * FROM position WHERE profile_id = :p_id");
+$stmt->execute(array(":p_id" => $_GET['profile_id']));
+$position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -87,10 +113,45 @@ if ( $row === false ) {
       <textarea name="summary" rows="8" cols="80"><?=htmlentities($row['summary']) ?></textarea>
       <p>
       <input type="hidden" name="profile_id" value="<?=htmlentities($_GET['profile_id']) ?>">
+      <div id="position_fields">
+<?php
+  for ($pos=0; $pos<count($position_rows); $pos++) {
+?>
+    <div id="position<?=$pos?>">
+    <label for="year<?=$pos?>">Year:</label>
+    <input type="text" name="year<?=$pos?>" value="<?=htmlentities($position_rows[$pos]['year'])?>">
+    <input type="button" value="-" onclick="$('#position<?=$pos?>').remove(); return false;">
+    <textarea name="desc<?=$pos?>" rows="8" cols="80"><?=htmlentities($position_rows[$pos]['description'])?></textarea>
+    </div>
+<?php
+  }
+ ?>
+      </div>
+      <p>Position: <button type="button" id="addPos">+</button></p>
       <input type="submit" name="save" value="Save">
       <input type="submit" name="cancel" value="Cancel">
       </p>
     </form>
   </div>
 </body>
+<script>
+countPos = <?=count($position_rows)?>;
+
+$(document).ready(function() {
+  $("#addPos").click(function(event){
+    event.preventDefault();
+    if (countPos >= 9) {
+      alert("Maximum of nine position entries reached");
+      return;
+    }
+    var div = $("<div>", {id:"position"+countPos});
+    div.append($("<label>", {for:"year"+countPos, html:"Year:"}));
+    div.append($("<input>", {type:"text", name:"year"+countPos, value:""}));
+    div.append($("<input>", {type:"button", value:"-", onclick:"$('#position"+countPos+"').remove(); return false;"}));
+    div.append($("<textarea>", {name:"desc"+countPos, rows:"8", cols:"80"}));
+    $("#position_fields").append( div );
+    countPos++;
+  });
+})
+</script>
 </html>
