@@ -76,6 +76,19 @@ if (isset($_POST['num_entries'])) {
     $entry['profile'].=' {GENERATED PROFILE DATA}';
     $entry['profile'].=' {password: '.$entry['password'].'}';
 
+    // positions
+    $entry['positions'] = array();
+    $year = 2018;
+    for ($num_positions=0; $num_positions < rand(0,9); $num_positions++) {
+        $new_pos = array();
+        $year = $year - rand(0,4);
+        $new_pos['year'] = $year;
+        $titles = ["Head of", "Director of", "Assistant to the", "Manager of", "Vice President of", "Chief", "President for", "", "", "", "", ""];
+
+        $new_pos['desc'] = $titles[rand(0,11)]." ".getRandomLineFromArray($randomwords)." ".getRandomLineFromArray($randomwords);
+        array_push($entry['positions'], $new_pos);
+    }
+
     return $entry;
   }
 
@@ -107,7 +120,23 @@ if (isset($_POST['num_entries'])) {
       ':em' => $new_entry['email'],
       ':he' => $new_entry['headline'],
       ':su' => $new_entry['profile'])
-      );
+    );
+
+    $profile_id = $pdo->lastInsertId();
+
+    $rank = 1;
+    foreach ($new_entry['positions'] as $pos) {
+      $stmt = $pdo->prepare('INSERT INTO Position
+        (profile_id, rank, year, description)
+        VALUES ( :pid, :rnk, :yr, :desc)');
+      $stmt->execute(array(
+        ':pid' => $profile_id,
+        ':rnk' => $rank,
+        ':yr' => $pos['year'],
+        ':desc' => $pos['desc'])
+        );
+      $rank++;
+    }
   }
 }
 
@@ -117,8 +146,7 @@ if (isset($_POST['num_entries'])) {
 <html>
 <head>
 <title>Profile Generator</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+<?php require_once "head.php"; ?>
 </head>
 <body>
   <div class="container">
