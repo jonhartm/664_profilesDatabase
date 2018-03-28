@@ -25,6 +25,13 @@ if (isset($_POST['first_name'])
     return;
   }
 
+  $message = validatePosition();
+  if (is_string($message)) {
+    $_SESSION['error'] = $message;
+    header("Location: add.php");
+    return;
+  }
+
   // If we got here, insert into the database
   $sql = "UPDATE profile SET first_name=:fn, last_name=:ln, url=:url, email=:em, headline =:he, summary=:su
             WHERE user_id = :u_id AND profile_id = :p_id";

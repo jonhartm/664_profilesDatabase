@@ -38,7 +38,7 @@ function validateProfile() {
 }
 
 function validatePosition() {
-  for ($x=1; $x <= 9; $x++) {
+  for ($x=0; $x < 9; $x++) {
     if (!isset($_POST['year'.$x])) continue;
     if (!isset($_POST['desc'.$x])) continue;
     $year = $_POST['year'.$x];
