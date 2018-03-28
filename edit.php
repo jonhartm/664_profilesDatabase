@@ -120,6 +120,7 @@ $position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <textarea name="summary" rows="8" cols="80"><?=htmlentities($row['summary']) ?></textarea>
       <p>
       <input type="hidden" name="profile_id" value="<?=htmlentities($_GET['profile_id']) ?>">
+      <p>Position: <button type="button" id="addPos">+</button></p>
       <div id="position_fields">
 <?php
   for ($pos=0; $pos<count($position_rows); $pos++) {
@@ -128,13 +129,13 @@ $position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <label for="year<?=$pos?>">Year:</label>
     <input type="text" name="year<?=$pos?>" value="<?=htmlentities($position_rows[$pos]['year'])?>">
     <input type="button" value="-" onclick="$('#position<?=$pos?>').remove(); return false;">
+    <br>
     <textarea name="desc<?=$pos?>" rows="8" cols="80"><?=htmlentities($position_rows[$pos]['description'])?></textarea>
     </div>
 <?php
   }
  ?>
       </div>
-      <p>Position: <button type="button" id="addPos">+</button></p>
       <input type="submit" name="save" value="Save">
       <input type="submit" name="cancel" value="Cancel">
       </p>
@@ -155,6 +156,7 @@ $(document).ready(function() {
     div.append($("<label>", {for:"year"+countPos, html:"Year:"}));
     div.append($("<input>", {type:"text", name:"year"+countPos, value:""}));
     div.append($("<input>", {type:"button", value:"-", onclick:"$('#position"+countPos+"').remove(); return false;"}));
+    div.append('<br>');
     div.append($("<textarea>", {name:"desc"+countPos, rows:"8", cols:"80"}));
     $("#position_fields").append( div );
     countPos++;
