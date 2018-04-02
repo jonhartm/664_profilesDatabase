@@ -48,33 +48,17 @@ if (isset($_POST['first_name'])
 
   $profile_id = $pdo->lastInsertId();
 
+  $_SESSION['info']="here";
   // Insert the position entries
-  $rank = 1;
-  for ($x=0; $x<=9; $x++) {
-    if (!isset($_POST['year'.$x])) continue;
-    if (!isset($_POST['desc'.$x])) continue;
-    $year = $_POST['year'.$x];
-    $desc = $_POST['desc'.$x];
+  insertPositions($pdo, $profile_id);
 
-    $stmt = $pdo->prepare('INSERT INTO Position
-      (profile_id, rank, year, description)
-      VALUES ( :pid, :rnk, :yr, :desc)');
-    $stmt->execute(array(
-      ':pid' => $profile_id,
-      ':rnk' => $rank,
-      ':yr' => $year,
-      ':desc' => $desc)
-      );
-    $rank++;
-  }
+  // Insert the education entries
+  insertEducations($pdo, $profile_id);
 
   $_SESSION['success'] = 'Profile Added';
   header("Location: index.php");
   return;
 }
-
-
-
 
 ?>
 
@@ -102,6 +86,8 @@ if (isset($_POST['first_name'])
       <p>Summary:<br/>
       <textarea name="summary" rows="8" cols="80"></textarea>
       <p>
+        <p>Education: <button type="button" id="addEdu">+</button></p>
+        <div id="education_fields"></div>
         <p>Position: <button type="button" id="addPos">+</button></p>
       <div id="position_fields"></div>
       <input type="submit" value="Add">
@@ -113,6 +99,7 @@ if (isset($_POST['first_name'])
 
 <script>
 countPos = 0;
+countEdu = 0;
 
 $(document).ready(function() {
   $("#addPos").click(function(event){
@@ -130,6 +117,24 @@ $(document).ready(function() {
     $("#position_fields").append( div );
     countPos++;
   });
+
+  $("#addEdu").click(function(event){
+    event.preventDefault();
+    if (countEdu >= 9) {
+      alert("Maximum of nine position entries reached");
+      return;
+    }
+    var div = $("<div>", {id:"education"+countPos});
+    div.append($("<label>", {for:"year"+countPos, html:"Year:"}));
+    div.append($("<input>", {type:"text", name:"edu_year"+countPos, value:""}));
+    div.append($("<input>", {type:"button", value:"-", onclick:"$('#education"+countPos+"').remove(); return false;"}));
+    div.append('<br>');
+    div.append($("<label>", {for:"edu_school"+countPos, html:"School:"}));
+    div.append($("<input>", {type:"text", name:"edu_school"+countPos, value:""}));
+    $("#education_fields").append( div );
+    countPos++;
+
+  })
 })
 </script>
 </html>
