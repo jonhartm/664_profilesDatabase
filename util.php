@@ -8,9 +8,9 @@ function flashMessages() {
       echo '<p style="color:green">'.htmlentities($_SESSION['success'])."</p>\n";
       unset($_SESSION['success']);
   }
-  if ( isset($_SESSION['information']) ) {
-      echo '<p style="color:yellow; background-color:gray">'.htmlentities($_SESSION['information'])."</p>\n";
-      unset($_SESSION['information']);
+  if ( isset($_SESSION['info']) ) {
+      echo '<p style="color:yellow; background-color:gray">'.htmlentities($_SESSION['info'])."</p>\n";
+      unset($_SESSION['info']);
   }
 }
 
