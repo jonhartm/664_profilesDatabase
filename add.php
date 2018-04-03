@@ -132,7 +132,7 @@ $(document).ready(function() {
     div.append($("<label>", {for:"edu_school"+countPos, html:"School:"}));
     div.append($("<input>", {type:"text", name:"edu_school"+countPos, value:""}));
     $("#education_fields").append( div );
-    countPos++;
+    countEdu++;
 
   })
 })
