@@ -28,7 +28,14 @@ if (isset($_POST['first_name'])
   $message = validatePosition();
   if (is_string($message)) {
     $_SESSION['error'] = $message;
-    header("Location: add.php");
+    header("Location: edit.php?profile_id={$_POST['profile_id']}");
+    return;
+  }
+
+  $message = validateEducation();
+  if (is_string($message)) {
+    $_SESSION['error'] = $message;
+    header("Location: edit.php?profile_id={$_POST['profile_id']}");
     return;
   }
 
@@ -45,28 +52,21 @@ if (isset($_POST['first_name'])
     ':em' => $_POST['email'],
     ':he' => $_POST['headline'],
     ':su' => $_POST['summary'])
-    );
+  );
 
-    // Insert the position entries
-    $rank = 1;
-    for ($x=0; $x<=9; $x++) {
-      if (!isset($_POST['year'.$x])) continue;
-      if (!isset($_POST['desc'.$x])) continue;
-      $year = $_POST['year'.$x];
-      $desc = $_POST['desc'.$x];
+  // clear the old position data
+  $stmt = $pdo->prepare("DELETE FROM Position WHERE profile_id=:p_id");
+  $stmt->execute(array(":p_id"=>$_REQUEST['profile_id']));
 
-      $stmt = $pdo->prepare('UPDATE Position SET year=:yr, description=:desc
-        WHERE profile_id=:pid AND rank=:rnk');
-      $stmt->execute(array(
-        ':pid' => $_POST['profile_id'],
-        ':rnk' => $rank,
-        ':yr' => $year,
-        ':desc' => $desc)
-        );
-      $rank++;
-    }
+  // Insert the position entries
+  insertPositions($pdo, $_REQUEST['profile_id']);
 
+  // clear the old education entries
+  $stmt = $pdo->prepare("DELETE FROM Education WHERE profile_id=:p_id");
+  $stmt->execute(array(":p_id"=>$_REQUEST['profile_id']));
 
+  // Insert the new education entries
+  insertEducations($pdo, $_REQUEST['profile_id']);
 
   $_SESSION['success'] = 'Profile Edited';
   header("Location: index.php");
@@ -89,9 +89,8 @@ if ( $row === false ) {
     return;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM position WHERE profile_id = :p_id");
-$stmt->execute(array(":p_id" => $_GET['profile_id']));
-$position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$position_rows = loadPos($pdo, $_REQUEST['profile_id']);
+$schools = loadEdu($pdo, $_REQUEST['profile_id']);
 
 ?>
 
@@ -103,7 +102,7 @@ $position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
   <div class="container">
-  <h1>Editing Profile for <?= $_SESSION['name'] ?></h1>
+  <h1>Editing Profile for <?= htmlentities($_SESSION['name']); ?></h1>
 <?php flashMessages(); ?>
     <form method="post">
       <p>First Name:
@@ -120,6 +119,25 @@ $position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <textarea name="summary" rows="8" cols="80"><?=htmlentities($row['summary']) ?></textarea>
       <p>
       <input type="hidden" name="profile_id" value="<?=htmlentities($_GET['profile_id']) ?>">
+
+      <p>Education: <button type="button" id="addEdu">+</button></p>
+      <div id="education_fields">
+<?php
+  for ($pos=0; $pos<count($schools); $pos++) {
+?>
+    <div id="education<?=$pos?>">
+      <label for="edu_year<?=$pos?>">Year:</label>
+      <input type="text" name="edu_year<?=$pos?>" value="<?=htmlentities($schools[$pos]['year'])?>">
+      <input type="button" value="-" onclick="$('#education<?=$pos?>').remove(); return false;">
+      <br>
+      <label for="edu_school<?=$pos?>">School:</label>
+      <input type="text" size="80" name="edu_school<?=$pos?>" value="<?=htmlentities($schools[$pos]['name'])?>"></input>
+    </div>
+<?php
+  }
+?>
+      </div>
+
       <p>Position: <button type="button" id="addPos">+</button></p>
       <div id="position_fields">
 <?php
@@ -144,6 +162,7 @@ $position_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </body>
 <script>
 countPos = <?=count($position_rows)?>;
+countEdu = <?=count($schools)?>;
 
 $(document).ready(function() {
   $("#addPos").click(function(event){
@@ -161,6 +180,23 @@ $(document).ready(function() {
     $("#position_fields").append( div );
     countPos++;
   });
+
+  $("#addEdu").click(function(event){
+    event.preventDefault();
+    if (countEdu >= 9) {
+      alert("Maximum of nine position entries reached");
+      return;
+    }
+    var div = $("<div>", {id:"education"+countPos});
+    div.append($("<label>", {for:"year"+countPos, html:"Year:"}));
+    div.append($("<input>", {type:"text", name:"edu_year"+countPos, value:""}));
+    div.append($("<input>", {type:"button", value:"-", onclick:"$('#education"+countPos+"').remove(); return false;"}));
+    div.append('<br>');
+    div.append($("<label>", {for:"edu_school"+countPos, html:"School:"}));
+    div.append($("<input>", {type:"text", size:"80", name:"edu_school"+countPos, value:""}));
+    $("#education_fields").append( div );
+    countEdu++;
+  })
 })
 </script>
 </html>
