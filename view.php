@@ -1,5 +1,6 @@
 <?php
 require_once "pdo.php";
+require_once "util.php";
 session_start();
 
 $stmt = $pdo->prepare("SELECT * FROM profile WHERE profile_id = :p_id");
@@ -11,9 +12,8 @@ if ( $row === false ) {
     return;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM position WHERE profile_id = :p_id");
-$stmt->execute(array(":p_id" => $_GET['profile_id']));
-$pos_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$pos_rows = loadPos($pdo, $_GET['profile_id']);
+$edu_rows = loadEdu($pdo, $_GET['profile_id']);
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +33,12 @@ $pos_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <p><?=htmlentities($row['headline']) ?></p>
     <p>Summary:<br/>
     <p><?=htmlentities($row['summary']) ?></p>
+    <p>Education:</p>
+<?php
+foreach ($edu_rows as $edu) {
+  echo '<li>'.$edu['year'].': '.$edu['name'].'</li>';
+}
+ ?>
     <p>Position</p>
     <p><ul>
 <?php
